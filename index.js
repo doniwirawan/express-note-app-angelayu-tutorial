@@ -9,7 +9,8 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.static('public'))
 
 
-let items = [];
+let items = []
+let workItems = []
 
 
 app.get('/', (req,res) => {
@@ -23,13 +24,31 @@ app.get('/', (req,res) => {
 
     const day = Today.toLocaleDateString('id-ID', options)
 
-    res.render('list', {day, newListItem: items})
+    res.render('list', {listTitle: day, newListItem: items})
+})
+
+app.get('/work', (req, res) => {
+    res.render('list', { listTitle: 'Work', newListItem: workItems})
 })
 
 app.post('/', (req,res) => {
+    console.log(req.body)
+
+    if(req.body.button == 'Work'){
+        workItems.push(req.body.newItem);
+        res.redirect('/work')
+    }
+
     items.push(req.body.newItem);
 
     res.redirect('/')
+
+})
+
+app.post('/work', (req,res) => {
+    workItems.push(req.body.newItem);
+
+    res.redirect('/work')
 
 })
 
