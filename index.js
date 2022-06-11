@@ -29,22 +29,24 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3]
 
-// Item.insertMany(defaultItems, (err) => {
-//     if (err) {
-//         console.log(err)
-//     } else {
-//         console.log('Insert Many Success')
-//     }
-// })
 
 app.get('/', (req, res) => {
     Item.find({}, (err, items) => {
         if (err) {
             console.log(err)
         } else {
-            console.log(items)
-
-            res.render('list', { listTitle: "today", newListItem: items })
+            if (items == 0) {
+                Item.insertMany(defaultItems, (err) => {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        console.log('Insert Many Success')
+                    }
+                })
+            } else {
+                console.log(items)
+                res.render('list', { listTitle: "today", newListItem: items })
+            }
         }
     })
 
