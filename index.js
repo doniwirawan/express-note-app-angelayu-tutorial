@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
         if (err) {
             console.log(err)
         } else {
-            if (items == 0) {
+            if (items.length == 0) {
                 Item.insertMany(defaultItems, (err) => {
                     if (err) {
                         console.log(err)
@@ -43,9 +43,10 @@ app.get('/', (req, res) => {
                         console.log('Insert Many Success')
                     }
                 })
+                res.redirect('/')
             } else {
-                console.log(items)
-                res.render('list', { listTitle: "today", newListItem: items })
+                // console.log(items)
+                res.render('list', { listTitle: "Today", newListItem: items })
             }
         }
     })
@@ -56,18 +57,41 @@ app.get('/work', (req, res) => {
     res.render('list', { listTitle: 'Work', newListItem: workItems })
 })
 
-app.post('/', (req, res) => {
-    console.log(req.body)
+app.post('/', async (req, res) => {
+    // console.log(req.body)
 
-    if (req.body.button == 'Work') {
-        workItems.push(req.body.newItem);
-        res.redirect('/work')
-    }
+    // if (req.body.button == 'Work') {
+    //     workItems.push(req.body.newItem);
+    //     res.redirect('/work')
+    // }
 
-    items.push(req.body.newItem);
+    // items.push(req.body.newItem);
 
-    res.redirect('/')
+    // res.redirect('/')
 
+    const itemName = req.body.newItem
+    const item = await new Item({
+        name: itemName
+    })
+
+    await item.save()
+    await res.redirect('/')
+
+})
+
+app.post('/delete', (req, res) => {
+    const itemSelected = req.body.checkbox
+    console.log(itemSelected)
+
+
+    Item.findByIdAndRemove(itemSelected, (err) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log('item deleted')
+            res.redirect('/')
+        }
+    })
 })
 
 app.post('/work', (req, res) => {
