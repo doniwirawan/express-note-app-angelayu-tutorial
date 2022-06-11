@@ -19,19 +19,37 @@ const Item = mongoose.model('Item', itemSchema)
 // let items = []
 // let workItems = []
 
+// const item1 = new Item({
+//     name: "Test 1"
+// })
+// const item2 = new Item({
+//     name: "Test 2"
+// })
+// const item3 = new Item({
+//     name: "Test 3"
+// })
+
+// const defaultItems = [item1, item2, item3]
+
+// Item.insertMany(defaultItems, (err) => {
+//     if (err) {
+//         console.log(err)
+//     } else {
+//         console.log('Insert Many Success')
+//     }
+// })
 
 app.get('/', (req, res) => {
-    // const Today = new Date;
-    // const options = {
-    //     weekday: "long",
-    //     day: "numeric",
-    //     month: "long",
-    //     year: "numeric"
-    // }
+    Item.find({}, (err, items) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log(items)
 
-    // const day = Today.toLocaleDateString('id-ID', options)
+            res.render('list', { listTitle: "today", newListItem: items })
+        }
+    })
 
-    res.render('list', { listTitle: day, newListItem: items })
 })
 
 app.get('/work', (req, res) => {
