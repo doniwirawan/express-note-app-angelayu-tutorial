@@ -94,12 +94,18 @@ app.post('/delete', (req, res) => {
     })
 })
 
-app.post('/work', (req, res) => {
-    workItems.push(req.body.newItem);
-
-    res.redirect('/work')
+app.get('/:categoryItem', (req, res) => {
+    const parameter = req.params.categoryItem
+    console.log(parameter)
 
 })
+
+// app.post('/work', (req, res) => {
+//     workItems.push(req.body.newItem);
+
+//     res.redirect('/work')
+
+// })
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('server running on port 3000')
