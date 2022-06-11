@@ -16,20 +16,18 @@ const itemSchema = {
 
 const Item = mongoose.model('Item', itemSchema)
 
-// let items = []
-// let workItems = []
 
-// const item1 = new Item({
-//     name: "Test 1"
-// })
-// const item2 = new Item({
-//     name: "Test 2"
-// })
-// const item3 = new Item({
-//     name: "Test 3"
-// })
+const item1 = new Item({
+    name: "Test 1"
+})
+const item2 = new Item({
+    name: "Test 2"
+})
+const item3 = new Item({
+    name: "Test 3"
+})
 
-// const defaultItems = [item1, item2, item3]
+const defaultItems = [item1, item2, item3]
 
 // Item.insertMany(defaultItems, (err) => {
 //     if (err) {
