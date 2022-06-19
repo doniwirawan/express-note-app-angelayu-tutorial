@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const { response } = require('express')
 const app = express()
 
 app.set('view engine', 'ejs')
@@ -29,6 +30,12 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3]
 
+const listSchema = {
+    name: String,
+    items: [itemSchema]
+}
+
+const List = mongoose.model("List", listSchema)
 
 app.get('/', (req, res) => {
     Item.find({}, (err, items) => {
@@ -53,9 +60,10 @@ app.get('/', (req, res) => {
 
 })
 
-app.get('/work', (req, res) => {
-    res.render('list', { listTitle: 'Work', newListItem: workItems })
-})
+
+// app.get('/work', (req, res) => {
+//     res.render('list', { listTitle: 'Work', newListItem: workItems })
+// })
 
 app.post('/', async (req, res) => {
     // console.log(req.body)
@@ -94,11 +102,11 @@ app.post('/delete', (req, res) => {
     })
 })
 
-app.get('/:categoryItem', (req, res) => {
-    const parameter = req.params.categoryItem
-    console.log(parameter)
+// app.get('/:categoryItem', (req, res) => {
+//     const parameter = req.params.categoryItem
+//     console.log(parameter)
 
-})
+// })
 
 // app.post('/work', (req, res) => {
 //     workItems.push(req.body.newItem);
@@ -106,6 +114,40 @@ app.get('/:categoryItem', (req, res) => {
 //     res.redirect('/work')
 
 // })
+
+
+app.get('/:customListName', (req, res) => {
+    const customListName = req.params.customListName
+
+    List.findOne({ name: customListName }, (err, result) => {
+        if (!err) {
+            if (!result) {
+                // console.log('doesnt exist')
+                // create new list
+                const list = new List({
+                    name: customListName,
+                    items: defaultItems
+                })
+
+                list.save()
+                // res.redirect(`/${customListName}`)
+                // process.exit(1)
+                // res.end('done')
+
+            } else {
+                // console.log('exist')
+                // show an existing list
+                res.render("list", { listTitle: result.name, newListItem: result.items })
+                // res.redirect(`/${customListName}`)
+                // process.exit(1)
+                // res.end('done')
+
+            }
+        }
+    })
+
+
+})
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('server running on port 3000')
