@@ -130,7 +130,7 @@ app.get('/:customListName', (req, res) => {
                 })
 
                 list.save()
-                // res.redirect(`/${customListName}`)
+                res.redirect(`/${customListName}`)
                 // process.exit(1)
                 // res.end('done')
 
