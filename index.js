@@ -89,7 +89,7 @@ app.post('/', async (req, res) => {
         await res.redirect('/')
     } else {
         List.findOne({ name: listName }, (err, res) => {
-            res.items
+            res.items.push()
         })
     }
 
