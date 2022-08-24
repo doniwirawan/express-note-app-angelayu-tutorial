@@ -108,17 +108,31 @@ app.post('/', async (req, res) => {
 
 app.post('/delete', (req, res) => {
     const itemSelected = req.body.checkbox
+    const listName = req.body.listName
+
     console.log(itemSelected)
+    if (listName === 'Today') {
+        Item.findByIdAndRemove(itemSelected, (err) => {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log('item deleted')
+                res.redirect('/')
+            }
+        })
+    } else {
+        List.findOneAndUpdate(
+            { name: listName }, { $pull: { items: { _id: itemSelected } } },
+            function (err, result) {
+                if (!err) {
+                    res.redirect(`/${listName}`)
+                }
+            }
+        )
+    }
 
 
-    Item.findByIdAndRemove(itemSelected, (err) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log('item deleted')
-            res.redirect('/')
-        }
-    })
+
 })
 
 
