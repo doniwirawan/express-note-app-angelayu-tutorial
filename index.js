@@ -97,7 +97,8 @@ app.post('/', async (req, res) => {
         res.redirect('/')
     } else {
         List.findOne({ name: listName }, function (err, result) {
-            result.items.push()
+
+            result.items.push(item)
             result.save()
             res.redirect(`/${listName}`)
         })
