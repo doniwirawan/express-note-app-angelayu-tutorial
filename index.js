@@ -52,7 +52,6 @@ app.get('/', (req, res) => {
                 })
                 res.redirect('/')
             } else {
-                // console.log(items)
                 res.render('list', { listTitle: "Today", newListItem: items })
             }
         }
@@ -60,22 +59,7 @@ app.get('/', (req, res) => {
 
 })
 
-
-// app.get('/work', (req, res) => {
-//     res.render('list', { listTitle: 'Work', newListItem: workItems })
-// })
-
 app.post('/', async (req, res) => {
-    // console.log(req.body)
-
-    // if (req.body.button == 'Work') {
-    //     workItems.push(req.body.newItem);
-    //     res.redirect('/work')
-    // }
-
-    // items.push(req.body.newItem);
-
-    // res.redirect('/')
 
     const itemName = req.body.newItem
     const listName = req.body.list
@@ -88,12 +72,12 @@ app.post('/', async (req, res) => {
         await item.save()
         await res.redirect('/')
     } else {
-        List.findOne({ name: listName }, (err, res) => {
-            res.items.push()
+        List.findOne({ name: listName }, function (err, result) {
+            result.items.push()
+            result.save()
+            res.redirect(`/${listName}`)
         })
     }
-
-
 
 })
 
@@ -112,28 +96,13 @@ app.post('/delete', (req, res) => {
     })
 })
 
-// app.get('/:categoryItem', (req, res) => {
-//     const parameter = req.params.categoryItem
-//     console.log(parameter)
-
-// })
-
-// app.post('/work', (req, res) => {
-//     workItems.push(req.body.newItem);
-
-//     res.redirect('/work')
-
-// })
-
-
 app.get('/:customListName', (req, res) => {
     const customListName = req.params.customListName
 
     List.findOne({ name: customListName }, (err, result) => {
         if (!err) {
             if (!result) {
-                // console.log('doesnt exist')
-                // create new list
+
                 const list = new List({
                     name: customListName,
                     items: defaultItems
@@ -141,17 +110,9 @@ app.get('/:customListName', (req, res) => {
 
                 list.save()
                 res.redirect(`/${customListName}`)
-                // process.exit(1)
-                // res.end('done')
 
             } else {
-                // console.log('exist')
-                // show an existing list
                 res.render("list", { listTitle: result.name, newListItem: result.items })
-                // res.redirect(`/${customListName}`)
-                // process.exit(1)
-                // res.end('done')
-
             }
         }
     })
