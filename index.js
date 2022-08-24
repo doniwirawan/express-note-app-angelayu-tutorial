@@ -21,14 +21,14 @@ const Item = mongoose.model('Item', itemSchema)
 const item1 = new Item({
     name: "Test 1"
 })
-const item2 = new Item({
-    name: "Test 2"
-})
-const item3 = new Item({
-    name: "Test 3"
-})
+// const item2 = new Item({
+//     name: "Test 2"
+// })
+// const item3 = new Item({
+//     name: "Test 3"
+// })
 
-const defaultItems = [item1, item2, item3]
+const defaultItems = [item1]
 
 const listSchema = {
     name: String,
@@ -59,18 +59,42 @@ app.get('/', (req, res) => {
 
 })
 
+app.get('/:customListName', (req, res) => {
+    const customListName = req.params.customListName
+
+    List.findOne({ name: customListName }, (err, result) => {
+        if (!err) {
+            if (!result) {
+
+                const list = new List({
+                    name: customListName,
+                    items: defaultItems
+                })
+
+                list.save()
+                res.redirect(`/${customListName}`)
+
+            } else {
+                res.render("list", { listTitle: result.name, newListItem: result.items })
+            }
+        }
+    })
+
+
+})
+
 app.post('/', async (req, res) => {
 
     const itemName = req.body.newItem
     const listName = req.body.list
 
-    const item = await new Item({
+    const item = new Item({
         name: itemName
     })
 
     if (listName === 'Today') {
-        await item.save()
-        await res.redirect('/')
+        item.save()
+        res.redirect('/')
     } else {
         List.findOne({ name: listName }, function (err, result) {
             result.items.push()
@@ -96,29 +120,7 @@ app.post('/delete', (req, res) => {
     })
 })
 
-app.get('/:customListName', (req, res) => {
-    const customListName = req.params.customListName
 
-    List.findOne({ name: customListName }, (err, result) => {
-        if (!err) {
-            if (!result) {
-
-                const list = new List({
-                    name: customListName,
-                    items: defaultItems
-                })
-
-                list.save()
-                res.redirect(`/${customListName}`)
-
-            } else {
-                res.render("list", { listTitle: result.name, newListItem: result.items })
-            }
-        }
-    })
-
-
-})
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('server running on port 3000')
