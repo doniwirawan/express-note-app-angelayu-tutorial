@@ -78,12 +78,22 @@ app.post('/', async (req, res) => {
     // res.redirect('/')
 
     const itemName = req.body.newItem
+    const listName = req.body.list
+
     const item = await new Item({
         name: itemName
     })
 
-    await item.save()
-    await res.redirect('/')
+    if (listName === 'Today') {
+        await item.save()
+        await res.redirect('/')
+    } else {
+        List.findOne({ name: listName }, (err, res) => {
+            res.items
+        })
+    }
+
+
 
 })
 
